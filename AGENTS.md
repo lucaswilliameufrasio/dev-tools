@@ -14,8 +14,9 @@ Ferramentas de programador que rodam 100% no navegador (SvelteKit estático, PWA
 
 ## Skills do repositório
 
-Instaladas com `npx skills add <repo> --skill <nome> -y`. Os arquivos ficam em `.agents/skills/` (registrados em `skills-lock.json`) e `.claude/skills/` contém só links simbólicos. Não edite os arquivos das skills; `npx skills update` os sobrescreve.
+Instaladas com `npx skills add <repo> --skill <nome> -y` (exceto `verify-dev-tools`, que é do projeto e não está em `skills-lock.json`). Os arquivos ficam em `.agents/skills/` (registrados em `skills-lock.json`) e `.claude/skills/` contém só links simbólicos. Não edite os arquivos das skills; `npx skills update` os sobrescreve.
 
 - `ui-ux-pro-max`: busca local de estilos, paletas, tipografia e regras de UX. Rode `python3 .agents/skills/ui-ux-pro-max/scripts/search.py "<consulta>" --design-system`. O `SKILL.md` cita `${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max`: neste repositório esse caminho é `.agents/skills/ui-ux-pro-max`. Use as sugestões como ponto de partida e descarte o que exigir recurso externo.
+- `verify-dev-tools` (do projeto): como subir o build de produção, dirigir as jornadas com Playwright e guardar evidências em `verification-artifacts/`. Use antes de dar uma entrega como pronta; mantenha `features/` atualizado quando mudarem rotas, ids de campo, service worker ou CSP.
 - `frontend-design` (Anthropic): processo de direção visual para evitar aparência genérica.
 - `svelte-core-bestpractices` e `svelte-code-writer` (time do Svelte): boas práticas de Svelte 5. O `svelte-code-writer` executa `npx @sveltejs/mcp` para consultar a documentação.
