@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "89496d5dd00f4810205f351759594fc2742bf8eea85a2f2b2d1de59f4bd91576"
+    },
+    "svelte-code-writer": {
+      "source": "sveltejs/ai-tools",
+      "sourceType": "github",
+      "skillPath": "plugins/claude/svelte/skills/svelte-code-writer/SKILL.md",
+      "computedHash": "abe888cce357ab0fa0104ff2266edaf9c3a8382320b303f920cd777762a6bc85"
+    },
+    "svelte-core-bestpractices": {
+      "source": "sveltejs/ai-tools",
+      "sourceType": "github",
+      "skillPath": "plugins/claude/svelte/skills/svelte-core-bestpractices/SKILL.md",
+      "computedHash": "3cd6c1f1a92b8bf52af8120e5cb3a93b5512f83b905fd902b895adafb7225456"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "d63bd281a96b8dfa52a2656ec6e6af743bfcfde6f6bfb6c9edc203cbff377b16"
+    }
+  }
+}

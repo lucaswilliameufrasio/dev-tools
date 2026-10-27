@@ -1,0 +1,4 @@
+# Keep in sync with package.json (engines/packageManager), .nvmrc and .node-version.
+[tools]
+node = "24.22.1"
+pnpm = "12.15.0"

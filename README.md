@@ -23,7 +23,7 @@ Aperte `Ctrl/⌘ K` em qualquer tela para buscar uma ferramenta.
 
 ## Desenvolvimento
 
-Versões fixadas: Node 24.22.1 (LTS Krypton) e pnpm 12.15.0. Use `nvm use` (ou fnm/mise, que leem `.nvmrc`/`.node-version`) e `corepack enable` para pegar as versões certas.
+Versões fixadas: Node 24.22.1 (LTS Krypton) e pnpm 12.15.0. Com [mise](https://mise.jdx.dev), rode `mise install` (lê `mise.toml`). Sem mise, `.nvmrc`/`.node-version` servem para nvm/fnm e `corepack enable` cuida do pnpm.
 
 ```sh
 pnpm install
@@ -55,7 +55,7 @@ Stack: SvelteKit com `adapter-static` (todas as rotas pré-renderizadas), Svelte
 
 ## Skills de IA
 
-O repositório traz skills para o Claude Code em `.claude/skills/` (design, UX e Svelte). Veja `CLAUDE.md`.
+O repositório traz skills de design, UX e Svelte em `.agents/skills/`, com links simbólicos em `.claude/skills/` para o Claude Code. Instale outras com `npx skills add`. Veja `CLAUDE.md`.
 
 ## Deploy no Cloudflare Pages
 
