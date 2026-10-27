@@ -12,6 +12,10 @@ export const pt = {
 	'group.convert': 'Converter',
 	'group.inspect': 'Inspecionar',
 	'group.generate': 'Gerar',
+	'group.security': 'Segurança',
+	'group.testdata': 'Dados de teste',
+	'group.code': 'Código',
+	'group.reference': 'Referência',
 	'privacy.badge': '100% no navegador',
 	'privacy.title': 'Seus dados não saem deste navegador',
 	'privacy.body':

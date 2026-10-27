@@ -14,6 +14,10 @@ export const en: Messages = {
 	'group.convert': 'Convert',
 	'group.inspect': 'Inspect',
 	'group.generate': 'Generate',
+	'group.security': 'Security',
+	'group.testdata': 'Test data',
+	'group.code': 'Code',
+	'group.reference': 'Reference',
 	'privacy.badge': '100% in your browser',
 	'privacy.title': 'Your data never leaves this browser',
 	'privacy.body':

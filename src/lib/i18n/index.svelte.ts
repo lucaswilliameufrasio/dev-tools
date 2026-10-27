@@ -1,10 +1,14 @@
+import { extraEn, extraPt, type ExtraKey } from './catalog';
 import { en } from './en';
 import { pt, type Messages } from './pt';
 
 export type Locale = 'pt' | 'en';
-export type MessageKey = keyof Messages;
+export type MessageKey = keyof Messages | ExtraKey;
 
-const dictionaries: Record<Locale, Messages> = { pt, en };
+const dictionaries: Record<Locale, Record<MessageKey, string>> = {
+	pt: { ...pt, ...extraPt },
+	en: { ...en, ...extraEn }
+};
 const STORAGE_KEY = 'dev-tools:locale';
 
 class I18n {

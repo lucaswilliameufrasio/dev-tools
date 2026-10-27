@@ -232,6 +232,10 @@
 		display: flex;
 		flex-direction: column;
 		gap: 18px;
+		max-height: calc(100vh - 90px);
+		overflow-y: auto;
+		padding-right: 6px;
+		scrollbar-width: thin;
 	}
 
 	.side-group h2 {
