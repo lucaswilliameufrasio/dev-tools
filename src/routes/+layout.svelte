@@ -38,8 +38,17 @@
 	</a>
 
 	<div class="top-actions">
-		<button type="button" class="search-trigger" onclick={() => palette?.open()}>
-			<span>{t('nav.search')}</span>
+		<button
+			type="button"
+			class="search-trigger"
+			aria-label={t('nav.search')}
+			onclick={() => palette?.open()}
+		>
+			<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+				<circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2" />
+				<path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+			</svg>
+			<span class="search-label">{t('nav.search')}</span>
 			<kbd>Ctrl K</kbd>
 		</button>
 		<button
@@ -149,6 +158,7 @@
 	}
 
 	.brand-name {
+		white-space: nowrap;
 		font-family: var(--font-mono);
 		font-weight: 700;
 		font-size: 1.05rem;
@@ -203,8 +213,9 @@
 		border-color: var(--accent);
 	}
 
-	.search-trigger span {
+	.search-label {
 		color: var(--ink-2);
+		white-space: nowrap;
 	}
 
 	kbd {
@@ -317,8 +328,13 @@
 			padding: 6px;
 		}
 
-		kbd {
+		kbd,
+		.search-label {
 			display: none;
+		}
+
+		.search-trigger {
+			padding: 4px 9px;
 		}
 	}
 </style>

@@ -37,8 +37,8 @@
 				<div class="diff" role="table" aria-label={t('diff.result')}>
 					{#each result.lines as line, position (position)}
 						<div class="diff-line {line.kind}" role="row">
-							<span class="diff-mark" aria-hidden="true">{MARKERS[line.kind]}</span>
-							<span class="diff-text">{line.text}</span>
+							<span class="diff-mark" role="cell">{MARKERS[line.kind]}</span>
+							<span class="diff-text" role="cell">{line.text}</span>
 						</div>
 					{/each}
 				</div>

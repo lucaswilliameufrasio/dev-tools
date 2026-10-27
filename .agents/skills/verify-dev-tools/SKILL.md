@@ -20,7 +20,21 @@ pnpm build                 # obrigatório se o build não existir ou estiver vel
 pnpm test:e2e              # sobe `vite preview` na porta 4399 (strictPort, sem reaproveitar servidor) e encerra ao terminar
 ```
 
-O próprio Playwright (`playwright.config.ts`, `webServer`) inicia e encerra o servidor. Para dirigir à mão (navegador MCP, curl), suba outro servidor em porta própria:
+O próprio Playwright (`playwright.config.ts`, `webServer`) inicia e encerra o servidor.
+
+**Ambiente mais próximo da produção:** `wrangler pages dev` serve `build/` com o `_headers` e o `wrangler.jsonc` reais do Cloudflare. Rode a mesma suíte contra ele com `E2E_BASE_URL`:
+
+```sh
+npx --yes wrangler@latest pages dev --port 8788 --ip 127.0.0.1 > /tmp/wrangler-dev.log 2>&1 &
+sleep 25 && curl -sI http://127.0.0.1:8788/base64 | grep -i content-security-policy   # cabeçalhos do _headers
+E2E_BASE_URL=http://127.0.0.1:8788 pnpm exec playwright test
+PID=$(lsof -ti tcp:8788 -sTCP:LISTEN); lsof -p "$PID" | grep cwd   # confirme que é este repositório
+kill "$PID"                                                       # e encerre também o `npm exec` que você iniciou
+```
+
+O mesmo `E2E_BASE_URL` serve para testar uma URL de preview do Cloudflare depois de um deploy.
+
+Para dirigir à mão (navegador MCP, curl), suba outro servidor em porta própria:
 
 ```sh
 pnpm exec vite preview --port 4398 --strictPort > /tmp/dev-tools-preview.log 2>&1 &
@@ -52,7 +66,13 @@ Se o build estiver velho ou ausente, rode `pnpm build` e repita. Se a porta esti
 - O Chromium headless usa `en-US`, então a interface começa em inglês; o botão de idioma alterna para `pt-BR`.
 - **Aguarde a hidratação** antes de usar atalhos de teclado: `page.goto('/', { waitUntil: 'networkidle' })`. Sem isso `Ctrl/⌘ K` é ignorado.
 - Service worker: o `playwright.config.ts` o bloqueia por padrão; os testes de PWA usam `test.use({ serviceWorkers: 'allow' })`.
-- Specs existentes: `e2e/privacy.spec.ts` (todas as rotas, zero requisição externa, CSP), `e2e/tools.spec.ts` (bcrypt/argon2/regex/SQL/jsontypes/cron/QR/hash) e `e2e/journeys.spec.ts` (jornadas completas com evidência).
+- Specs (`pnpm test:e2e` roda tudo, em chromium, firefox, webkit e, para o layout, Pixel 7 e iPhone 14):
+  - `privacy.spec.ts`: todas as rotas, zero requisição externa, CSP.
+  - `journeys.spec.ts`: jornada Base64 (paleta, codificar, decodificar, idioma) e PWA offline, com evidência.
+  - `flows.spec.ts`: um fluxo funcional por ferramenta (bcrypt/argon2 gerar, verificar e cancelar; JWT assinar/verificar; as 11 linguagens do JSON; QR gerar e ler o PNG de volta; imagem; conversores e geradores).
+  - `tools.spec.ts`: smoke de worker, WebAssembly e carregamento lazy.
+  - `layout.spec.ts`: sem rolagem horizontal em claro e escuro, desktop e celular; paleta usável.
+  - `a11y.spec.ts`: axe (WCAG 2 A/AA) em todas as rotas, claro e escuro, só no Chromium; falha em impacto serious/critical.
 
 Mapa de funcionalidades: `features/README.md`.
 
@@ -63,6 +83,7 @@ Diretório: `verification-artifacts/` (ignorado pelo git; sobrevive ao teardown)
 - `base64-encode.png`, `base64-decode.png`: ação e estado resultante.
 - `base64-network-log.json`: toda requisição da jornada; prova que nenhuma saiu da origem.
 - `json-offline.png`: ferramenta usada com a rede desligada.
+- `layout/<projeto>-<tema>-<rota>.png`: telas de todas as rotas em celular, claro e escuro. Olhe algumas: o teste mede overflow, não beleza (foi assim que se achou o cabeçalho quebrando em duas linhas).
 
 Prova suficiente = o teste passou **e** os artefatos existem **e** a lista de requisições externas está vazia. Screenshot sozinho não basta; verifique também o valor dos campos (`toHaveValue`) e o `localStorage`.
 
@@ -84,4 +105,4 @@ Prova suficiente = o teste passou **e** os artefatos existem **e** a lista de re
 
 ## Manutenção
 
-Atualize `features/` e os seletores acima quando mudarem rotas, ids de campo, textos usados como nome acessível, o service worker ou o CSP. Ao adicionar uma ferramenta, `e2e/privacy.spec.ts` já a cobre pelo registro; acrescente uma jornada em `e2e/journeys.spec.ts` se ela tiver fluxo próprio relevante. Este mapa cobre algumas jornadas, não todas as 30 ferramentas.
+Atualize `features/` e os seletores acima quando mudarem rotas, ids de campo, textos usados como nome acessível, o service worker ou o CSP. Ao adicionar uma ferramenta, `e2e/privacy.spec.ts` já a cobre pelo registro; acrescente uma jornada em `e2e/journeys.spec.ts` se ela tiver fluxo próprio relevante. O mapa de `features/` cobre as jornadas principais; as demais ferramentas têm um fluxo em `flows.spec.ts` e testes unitários, mas não uma jornada documentada.

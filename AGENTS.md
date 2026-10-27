@@ -10,7 +10,7 @@ Ferramentas de programador que rodam 100% no navegador (SvelteKit estático, PWA
 - Cada ferramenta tem lógica pura em `.ts` com teste, e a tela em `.svelte`. Veja o README para adicionar uma.
 - Textos do app ficam em `src/lib/i18n/pt.ts` e `en.ts`; os de cada ferramenta nova ficam em `messages.ts` na pasta dela (via `defineMessages`, registrado em `src/lib/i18n/catalog.ts`). Sempre as mesmas chaves em pt e en.
 - Estilo de código: `if`/`for` sempre com chaves e várias linhas, sem `forEach`, `undefined` em vez de `null`, sem `any` nem `as`.
-- Antes de concluir: `pnpm test`, `pnpm check`, `pnpm build` e `pnpm test:e2e` (o E2E usa o build; a porta é dedicada e nunca reaproveita outro servidor).
+- Antes de concluir: `pnpm test`, `pnpm check`, `pnpm build` e `pnpm test:e2e` (o E2E usa o build; a porta é dedicada e nunca reaproveita outro servidor; `E2E_BASE_URL` aponta a suíte para `wrangler pages dev` ou um preview do Cloudflare). O E2E cobre chromium, firefox, webkit, layout em celular e acessibilidade (axe).
 
 ## Skills do repositório
 

@@ -73,16 +73,15 @@
 			</div>
 			<div class="panel">
 				<div class="swatch-pair">
-					<div class="swatch" style:background={hex} style:color="#ffffff">
-						<strong>{t('color.onWhite')}</strong>
-						<span class="mono">{onWhite.toFixed(2)}:1</span>
-						<span>{grade(onWhite)}</span>
-					</div>
-					<div class="swatch" style:background={hex} style:color="#000000">
-						<strong>{t('color.onBlack')}</strong>
-						<span class="mono">{onBlack.toFixed(2)}:1</span>
-						<span>{grade(onBlack)}</span>
-					</div>
+					{#each [{ label: t('color.onWhite'), ink: '#ffffff', ratio: onWhite }, { label: t('color.onBlack'), ink: '#000000', ratio: onBlack }] as sample (sample.ink)}
+						<div class="sample">
+							<div class="swatch" style:background={hex} style:color={sample.ink} aria-hidden="true">
+								<span class="aa">Aa</span>
+							</div>
+							<strong>{sample.label}</strong>
+							<span class="mono">{sample.ratio.toFixed(2)}:1 · {grade(sample.ratio)}</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 		</div>
@@ -90,3 +89,18 @@
 		<Notice tone="error">{t('color.errInvalid')}</Notice>
 	{/if}
 </div>
+
+<style>
+	.sample {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		min-width: 0;
+	}
+
+	.aa {
+		font-size: 2rem;
+		font-weight: 700;
+		line-height: 1;
+	}
+</style>

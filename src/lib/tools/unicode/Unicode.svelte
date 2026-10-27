@@ -198,7 +198,7 @@
 	}
 	.pill.ghost {
 		background: var(--accent-soft);
-		color: var(--accent-ink);
+		color: var(--accent);
 	}
 	.flag {
 		margin: 0 4px 4px 0;

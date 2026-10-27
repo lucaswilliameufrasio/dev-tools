@@ -33,7 +33,7 @@ Versões fixadas: Node 24.22.1 (LTS Krypton) e pnpm 12.15.0. Com [mise](https://
 pnpm install
 pnpm dev        # servidor local
 pnpm test       # testes unitários da lógica das ferramentas
-pnpm test:e2e   # Playwright: privacidade (nenhuma requisição externa) e fluxos com wasm/worker; rode `pnpm build` antes
+pnpm test:e2e   # Playwright (chromium, firefox, webkit, celular): privacidade, fluxos de cada ferramenta, PWA offline, layout e acessibilidade; rode `pnpm build` antes
 pnpm check      # svelte-check
 pnpm build      # gera ./build (site estático)
 pnpm preview    # serve ./build
