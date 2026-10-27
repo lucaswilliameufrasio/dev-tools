@@ -57,7 +57,22 @@
 			title={t('nav.theme', { name: t(`theme.${theme.choice}` as MessageKey) })}
 			onclick={() => theme.cycle()}
 		>
-			{theme.choice === 'system' ? '◐' : theme.choice === 'light' ? '○' : '●'}
+			<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+				{#if theme.choice === 'system'}
+					<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2" />
+					<path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" />
+				{:else if theme.choice === 'light'}
+					<circle cx="12" cy="12" r="4" fill="currentColor" />
+					<path
+						d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+					/>
+				{:else}
+					<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z" fill="currentColor" />
+				{/if}
+			</svg>
 		</button>
 	</div>
 </header>

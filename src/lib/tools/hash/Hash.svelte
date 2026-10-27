@@ -110,5 +110,5 @@
 			</ul>
 		</div>
 	{/if}
-	<Notice tone="info">{t('hash.noMd5')}</Notice>
+	<Notice tone="info">{t('hash.weakWarning')}</Notice>
 </div>

@@ -1,6 +1,8 @@
-export type HashAlgorithm = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512';
+import { hmacMd5, md5 } from './md5';
 
-export const HASH_ALGORITHMS: HashAlgorithm[] = ['SHA-1', 'SHA-256', 'SHA-384', 'SHA-512'];
+export type HashAlgorithm = 'MD5' | 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512';
+
+export const HASH_ALGORITHMS: HashAlgorithm[] = ['MD5', 'SHA-1', 'SHA-256', 'SHA-384', 'SHA-512'];
 
 export function toHex(bytes: Uint8Array): string {
 	let hex = '';
@@ -17,6 +19,9 @@ function asBuffer(bytes: Uint8Array): ArrayBuffer {
 }
 
 export async function digest(algorithm: HashAlgorithm, data: Uint8Array): Promise<string> {
+	if (algorithm === 'MD5') {
+		return toHex(md5(data));
+	}
 	const result = await crypto.subtle.digest(algorithm, asBuffer(data));
 	return toHex(new Uint8Array(result));
 }
@@ -26,6 +31,9 @@ export async function hmac(
 	key: Uint8Array,
 	data: Uint8Array
 ): Promise<string> {
+	if (algorithm === 'MD5') {
+		return toHex(hmacMd5(key, data));
+	}
 	const cryptoKey = await crypto.subtle.importKey(
 		'raw',
 		asBuffer(key),

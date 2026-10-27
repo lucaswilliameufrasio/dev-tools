@@ -1,4 +1,12 @@
-/* Bancada: a cool paper-gray workspace, monospace for data, one cobalt accent. */
+@import '@fontsource/ibm-plex-sans/latin-400.css';
+@import '@fontsource/ibm-plex-sans/latin-500.css';
+@import '@fontsource/ibm-plex-sans/latin-600.css';
+@import '@fontsource/ibm-plex-sans/latin-700.css';
+@import '@fontsource/jetbrains-mono/latin-400.css';
+@import '@fontsource/jetbrains-mono/latin-700.css';
+
+/* Bancada: a cool paper-gray workspace, monospace for data, one cobalt accent.
+   Fonts are self-hosted so no request ever leaves the origin. */
 :root {
 	--bg: #e9edf2;
 	--surface: #ffffff;
@@ -19,8 +27,8 @@
 	--removed: #fde4e1;
 	--mark: #ffe28a;
 	--shadow: 0 1px 2px rgb(17 22 28 / 0.06);
-	--font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	--font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, 'Liberation Mono', monospace;
+	--font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, 'Liberation Mono', monospace;
 	--radius: 8px;
 	color-scheme: light;
 }
@@ -193,7 +201,7 @@ code,
 	min-height: 30px;
 }
 
-.panel-head > label,
+.panel-head > label:not(.btn),
 .panel-head > .label,
 .field > label {
 	font-size: 0.78rem;
@@ -719,6 +727,26 @@ th {
 .palette-empty {
 	padding: 16px;
 	color: var(--ink-2);
+}
+
+@media (pointer: coarse) {
+	.btn,
+	.btn.small,
+	.check,
+	.seg-track label,
+	.picker {
+		min-height: 44px;
+	}
+
+	.seg-track label {
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.check input {
+		width: 20px;
+		height: 20px;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
