@@ -1,0 +1,52 @@
+import { defineMessages } from '#lib/i18n/define.js';
+
+export const messages = defineMessages(
+	{
+		'tool.jsontypes.name': 'JSON para tipos',
+		'tool.jsontypes.desc': 'Gera tipos, structs e classes (TypeScript, Go, Rust, Dart, Kotlin, Swift, C#, Java, Python, Zod, JSON Schema) a partir de um JSON.',
+		'jsontypes.input': 'JSON de exemplo',
+		'jsontypes.language': 'Linguagem',
+		'jsontypes.group.languages': 'Linguagens',
+		'jsontypes.group.schemas': 'Schemas e validação',
+		'jsontypes.rootName': 'Nome do tipo raiz',
+		'jsontypes.options': 'Opções',
+		'jsontypes.allOptional': 'Todos os campos opcionais',
+		'jsontypes.bigIntString': 'Inteiros acima de 64 bits como string',
+		'jsontypes.tsStyle': 'Estilo do TypeScript',
+		'jsontypes.goOptional': 'Campos opcionais em Go',
+		'jsontypes.goPointer': 'Ponteiros',
+		'jsontypes.goOmitempty': 'Só omitempty',
+		'jsontypes.rustCloneEq': 'Derivar Clone e PartialEq',
+		'jsontypes.pythonStyle': 'Estilo do Python',
+		'jsontypes.empty': 'Cole um JSON para gerar os tipos.',
+		'jsontypes.err.syntax': 'JSON inválido: {message}. Corrija o trecho indicado e tente de novo.',
+		'jsontypes.err.scalar': 'A raiz precisa ser um objeto ou uma lista. Envolva o valor em um objeto, por exemplo {"valor": ...}.',
+		'jsontypes.note.rootArray': 'A raiz é uma lista: o tipo dos elementos é {item} e {root} representa a lista inteira.',
+		'jsontypes.note.numbers': 'Números sem parte decimal viram inteiros: 1.0 e 1 são iguais para o JSON lido. Confira os campos que podem ter decimais.',
+		'jsontypes.output': 'Código gerado'
+	},
+	{
+		'tool.jsontypes.name': 'JSON to types',
+		'tool.jsontypes.desc': 'Generate types, structs and classes (TypeScript, Go, Rust, Dart, Kotlin, Swift, C#, Java, Python, Zod, JSON Schema) from a JSON sample.',
+		'jsontypes.input': 'Sample JSON',
+		'jsontypes.language': 'Language',
+		'jsontypes.group.languages': 'Languages',
+		'jsontypes.group.schemas': 'Schemas and validation',
+		'jsontypes.rootName': 'Root type name',
+		'jsontypes.options': 'Options',
+		'jsontypes.allOptional': 'Make every field optional',
+		'jsontypes.bigIntString': 'Integers beyond 64 bits as string',
+		'jsontypes.tsStyle': 'TypeScript style',
+		'jsontypes.goOptional': 'Optional fields in Go',
+		'jsontypes.goPointer': 'Pointers',
+		'jsontypes.goOmitempty': 'omitempty only',
+		'jsontypes.rustCloneEq': 'Derive Clone and PartialEq',
+		'jsontypes.pythonStyle': 'Python style',
+		'jsontypes.empty': 'Paste some JSON to generate the types.',
+		'jsontypes.err.syntax': 'Invalid JSON: {message}. Fix the part it points to and try again.',
+		'jsontypes.err.scalar': 'The root must be an object or an array. Wrap the value in an object, for example {"value": ...}.',
+		'jsontypes.note.rootArray': 'The root is an array: the element type is {item} and {root} stands for the whole array.',
+		'jsontypes.note.numbers': 'Numbers without a decimal part become integers: 1.0 and 1 are the same once parsed. Check fields that may hold decimals.',
+		'jsontypes.output': 'Generated code'
+	}
+);

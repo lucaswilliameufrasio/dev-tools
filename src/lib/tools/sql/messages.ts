@@ -1,0 +1,65 @@
+import { defineMessages } from '#lib/i18n/define.js';
+
+export const messages = defineMessages(
+	{
+		'tool.sql.name': 'SQL',
+		'tool.sql.desc': 'Formate ou minifique consultas SQL em vários dialetos.',
+		'sql.action': 'Ação',
+		'sql.actionFormat': 'Formatar',
+		'sql.actionMinify': 'Minificar',
+		'sql.dialect': 'Dialeto',
+		'sql.dialect.sql': 'SQL padrão',
+		'sql.dialect.postgresql': 'PostgreSQL',
+		'sql.dialect.mysql': 'MySQL',
+		'sql.dialect.mariadb': 'MariaDB',
+		'sql.dialect.sqlite': 'SQLite',
+		'sql.dialect.transactsql': 'T-SQL (SQL Server)',
+		'sql.dialect.plsql': 'PL/SQL (Oracle)',
+		'sql.dialect.bigquery': 'BigQuery',
+		'sql.dialect.snowflake': 'Snowflake',
+		'sql.dialect.redshift': 'Redshift',
+		'sql.keywordCase': 'Palavras-chave',
+		'sql.caseUpper': 'MAIÚSCULAS',
+		'sql.caseLower': 'minúsculas',
+		'sql.casePreserve': 'Manter',
+		'sql.indent': 'Indentação',
+		'sql.indentTab': 'Tab',
+		'sql.loading': 'Carregando o formatador...',
+		'sql.errFormat':
+			'Não foi possível formatar: {message} Confira aspas, parênteses e o dialeto escolhido.',
+		'sql.errMinify':
+			'Não foi possível minificar: {message} Feche o trecho aberto e tente de novo.',
+		'sql.errLoad': 'Não foi possível carregar o formatador. Recarregue a página.',
+		'sql.empty': 'Cole uma consulta SQL.'
+	},
+	{
+		'tool.sql.name': 'SQL',
+		'tool.sql.desc': 'Format or minify SQL queries across several dialects.',
+		'sql.action': 'Action',
+		'sql.actionFormat': 'Format',
+		'sql.actionMinify': 'Minify',
+		'sql.dialect': 'Dialect',
+		'sql.dialect.sql': 'Standard SQL',
+		'sql.dialect.postgresql': 'PostgreSQL',
+		'sql.dialect.mysql': 'MySQL',
+		'sql.dialect.mariadb': 'MariaDB',
+		'sql.dialect.sqlite': 'SQLite',
+		'sql.dialect.transactsql': 'T-SQL (SQL Server)',
+		'sql.dialect.plsql': 'PL/SQL (Oracle)',
+		'sql.dialect.bigquery': 'BigQuery',
+		'sql.dialect.snowflake': 'Snowflake',
+		'sql.dialect.redshift': 'Redshift',
+		'sql.keywordCase': 'Keywords',
+		'sql.caseUpper': 'UPPERCASE',
+		'sql.caseLower': 'lowercase',
+		'sql.casePreserve': 'Preserve',
+		'sql.indent': 'Indent',
+		'sql.indentTab': 'Tab',
+		'sql.loading': 'Loading the formatter...',
+		'sql.errFormat':
+			'Could not format: {message} Check quotes, parentheses and the selected dialect.',
+		'sql.errMinify': 'Could not minify: {message} Close the open section and try again.',
+		'sql.errLoad': 'Could not load the formatter. Reload the page.',
+		'sql.empty': 'Paste a SQL query.'
+	}
+);

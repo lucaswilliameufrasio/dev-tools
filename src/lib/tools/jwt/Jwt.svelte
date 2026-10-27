@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { i18n, t, type MessageKey } from '#lib/i18n/index.svelte.js';
 	import Notice from '#lib/ui/Notice.svelte';
+	import Segmented from '#lib/ui/Segmented.svelte';
+	import JwtSign from './JwtSign.svelte';
+	import JwtVerify from './JwtVerify.svelte';
 	import OutputBox from '#lib/ui/OutputBox.svelte';
 	import { relativeTime } from '../timestamp/timestamp';
 	import { decodeJwt, type JwtTime } from './jwt';
@@ -9,6 +12,9 @@
 	let input = $state(
 		'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
 	);
+
+	type Mode = 'decode' | 'verify' | 'sign';
+	let mode = $state<Mode>('decode');
 
 	const result = $derived(input.trim() === '' ? undefined : decodeJwt(input));
 
@@ -29,50 +35,70 @@
 </script>
 
 <div class="stack">
-	<div class="panel">
-		<div class="panel-head">
-			<label for="jwt-input">{t('jwt.token')}</label>
-			<button type="button" class="btn small" onclick={() => (input = '')}>{t('common.clear')}</button>
-		</div>
-		<textarea
-			id="jwt-input"
-			class="area"
-			rows="5"
-			bind:value={input}
-			spellcheck="false"
-			aria-invalid={result !== undefined && !result.ok}
-		></textarea>
-	</div>
+	<Segmented
+		name="jwt-mode"
+		legend={t('jwtx.mode')}
+		bind:value={mode}
+		options={[
+			{ value: 'decode', label: t('jwtx.mode.decode') },
+			{ value: 'verify', label: t('jwtx.mode.verify') },
+			{ value: 'sign', label: t('jwtx.mode.sign') }
+		]}
+	/>
 
-	<Notice tone="info">{t('jwt.noVerify')}</Notice>
-
-	{#if result && !result.ok}
-		<Notice tone="error">{t(`jwt.err.${result.reason}` as MessageKey)}</Notice>
-	{:else if result}
-		<div class="io">
-			<OutputBox id="jwt-header" label="Header" value={pretty(result.token.header)} rows={8} />
-			<OutputBox id="jwt-payload" label="Payload" value={pretty(result.token.payload)} rows={8} />
-		</div>
-		{#if result.token.times.length > 0}
-			<div class="panel">
-				<div class="panel-head"><h2>{t('jwt.times')}</h2></div>
-				<ul class="results">
-					{#each result.token.times as time (time.claim)}
-						{@const state = status(time)}
-						<li>
-							<span class="results-label mono">{time.claim}</span>
-							<span class="results-value">
-								<code>{time.date.toISOString()}</code>
-								<span class="muted">· {relativeTime(time.date, new Date(), i18n.intlLocale)}</span>
-							</span>
-							{#if state}
-								<span class="pill" class:bad={state !== 'jwt.valid'}>{t(state)}</span>
-							{/if}
-						</li>
-					{/each}
-				</ul>
+	{#if mode !== 'sign'}
+		<div class="panel">
+			<div class="panel-head">
+				<label for="jwt-input">{t('jwt.token')}</label>
+				<button type="button" class="btn small" onclick={() => (input = '')}>{t('common.clear')}</button>
 			</div>
+			<textarea
+				id="jwt-input"
+				class="area"
+				rows="5"
+				bind:value={input}
+				spellcheck="false"
+				aria-invalid={result !== undefined && !result.ok}
+			></textarea>
+		</div>
+
+	{/if}
+
+	{#if mode === 'verify'}
+		<JwtVerify token={input} />
+	{:else if mode === 'sign'}
+		<JwtSign />
+	{:else}
+		<Notice tone="info">{t('jwt.noVerify')}</Notice>
+
+		{#if result && !result.ok}
+			<Notice tone="error">{t(`jwt.err.${result.reason}` as MessageKey)}</Notice>
+		{:else if result}
+			<div class="io">
+				<OutputBox id="jwt-header" label="Header" value={pretty(result.token.header)} rows={8} />
+				<OutputBox id="jwt-payload" label="Payload" value={pretty(result.token.payload)} rows={8} />
+			</div>
+			{#if result.token.times.length > 0}
+				<div class="panel">
+					<div class="panel-head"><h2>{t('jwt.times')}</h2></div>
+					<ul class="results">
+						{#each result.token.times as time (time.claim)}
+							{@const state = status(time)}
+							<li>
+								<span class="results-label mono">{time.claim}</span>
+								<span class="results-value">
+									<code>{time.date.toISOString()}</code>
+									<span class="muted">· {relativeTime(time.date, new Date(), i18n.intlLocale)}</span>
+								</span>
+								{#if state}
+									<span class="pill" class:bad={state !== 'jwt.valid'}>{t(state)}</span>
+								{/if}
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
+			<OutputBox id="jwt-signature" label={t('jwt.signature')} value={result.token.signature} rows={2} />
 		{/if}
-		<OutputBox id="jwt-signature" label={t('jwt.signature')} value={result.token.signature} rows={2} />
 	{/if}
 </div>
