@@ -55,9 +55,33 @@ Stack: SvelteKit com `adapter-static` (todas as rotas pré-renderizadas), Svelte
 
 1. Crie `src/lib/tools/<id>/<id>.ts` com a lógica e `<id>.test.ts`.
 2. Crie o componente `.svelte` ao lado.
-3. Inclua `<id>` em `ToolId` e em `TOOLS` no `registry.ts`.
-4. Crie `messages.ts` com `defineMessages` (`tool.<id>.name`, `tool.<id>.desc` e os demais textos, em pt e en) e importe-o em `src/lib/i18n/catalog.ts`.
-5. Rode `pnpm test`, `pnpm check`, `pnpm build` e `pnpm test:e2e`: o teste de privacidade cobre toda rota registrada.
+3. Inclua `<id>` em `ToolId` e em `TOOLS` no `registry.ts` (id, grupo, glifo e palavras-chave de busca).
+4. Crie a rota `src/routes/<id>/+page.svelte` (copie a de outra ferramenta: ela importa o componente e o envolve em `ToolPage`). Uma rota por ferramenta é proposital: cada página carrega só o próprio JS e CSS e já vem renderizada no HTML.
+5. Crie `messages.ts` com `defineMessages` (`tool.<id>.name`, `tool.<id>.desc` e os demais textos, em pt e en) e importe-o em `src/lib/i18n/catalog.ts`.
+6. Rode `pnpm test`, `pnpm check`, `pnpm build` e `pnpm test:e2e`: o teste de privacidade cobre toda rota registrada.
+
+## Desempenho
+
+Medido com Lighthouse 13.5 contra `wrangler pages dev` (cabeçalhos reais do Cloudflare), em 6 rotas:
+
+| | Desktop | Celular (4G lento simulado) |
+| --- | --- | --- |
+| Performance | 99–100 | 91–99 |
+| Acessibilidade, Boas práticas, SEO | 100 | 100 |
+| CLS | 0 | 0 |
+| LCP | 0,4–0,8 s | 1,9–2,8 s |
+
+Cada página transfere cerca de 160–280 KiB, a maior parte fontes e o JavaScript da própria ferramenta.
+
+**Custo do WebAssembly** (`node scripts/perf/measure-wasm.mjs`, máquina Apple Silicon, mediana de 3 execuções):
+
+- O WebAssembly vem embutido nos workers: `argon2` 12 KiB e `bcrypt` 11 KiB em gzip. Só são buscados quando a ferramenta é usada.
+- Partida a frio (worker + compilação do wasm): ~6–10 ms.
+- argon2id com os mínimos da OWASP (19 MiB, t=2, p=1): ~30 ms nos três navegadores, contra 16 ms do argon2 nativo do Node. Com 64 MiB, t=3, p=4: ~120 ms contra 29 ms nativo, porque o wasm roda em uma única thread.
+- bcrypt: custo 10 em ~65 ms, custo 12 em ~240 ms.
+- A thread principal não trava: o maior intervalo entre quadros durante o cálculo foi de ~17–18 ms (um quadro a 60 Hz).
+
+Em celulares esses tempos são maiores (da ordem de 3 a 6 vezes); não foram medidos em aparelho real.
 
 ## Skills de IA
 

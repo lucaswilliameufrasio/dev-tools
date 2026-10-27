@@ -161,7 +161,9 @@
 
 		<div class="panel">
 			<div class="panel-head"><h2>{t('cron.breakdown')}</h2></div>
-			<div class="table-wrap">
+			<!-- A scrollable region must be reachable by keyboard. -->
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+			<div class="table-wrap" tabindex="0">
 				<table>
 					<thead>
 						<tr>

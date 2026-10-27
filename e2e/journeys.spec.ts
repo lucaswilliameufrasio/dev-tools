@@ -1,4 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { open } from './support';
 import { expect, test } from '@playwright/test';
 
 /**
@@ -26,7 +27,7 @@ test('journey: find Base64 from the palette, encode, decode, keep the language',
 	});
 
 	// 1. Open the app and reach the tool through the command palette.
-	await page.goto('/', { waitUntil: 'networkidle' });
+	await open(page, '/', { waitUntil: 'networkidle' });
 	await page.keyboard.press('ControlOrMeta+K');
 	await page.locator('#palette-search').fill('b64');
 	await page.keyboard.press('Enter');
@@ -69,7 +70,7 @@ test.describe('offline PWA', () => {
 		page,
 		context
 	}) => {
-		await page.goto('/');
+		await open(page, '/');
 		await page.evaluate(async () => {
 			await navigator.serviceWorker.ready;
 		});
@@ -80,7 +81,7 @@ test.describe('offline PWA', () => {
 			.toBe(true);
 
 		await context.setOffline(true);
-		await page.goto('/json');
+		await open(page, '/json');
 		await expect(page.getByRole('heading', { level: 1, name: 'JSON' })).toBeVisible();
 		await page.locator('#json-input').fill('{"a":1,"b":[true,null]}');
 		await expect(page.locator('#json-output')).toHaveValue('{\n  "a": 1,\n  "b": [\n    true,\n    null\n  ]\n}');

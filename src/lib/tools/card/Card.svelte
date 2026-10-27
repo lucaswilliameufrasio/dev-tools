@@ -180,7 +180,9 @@
 			<h2 class="small-text">{t('card.reference')}</h2>
 		</div>
 		<p class="muted small-text">{t('card.reference.note')}</p>
-		<div class="table-wrap">
+		<!-- A scrollable region must be reachable by keyboard. -->
+		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+		<div class="table-wrap" tabindex="0">
 			<table>
 				<thead>
 					<tr>

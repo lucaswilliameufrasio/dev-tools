@@ -61,10 +61,10 @@ Se o build estiver velho ou ausente, rode `pnpm build` e repita. Se a porta esti
 
 ## Drive
 
-- Rotas: `/` e `/<id>` para cada id em `src/lib/tools/registry.ts` (31 no total).
+- Rotas: `/` e `/<id>` para cada id em `src/lib/tools/registry.ts` (31 no total). Cada ferramenta tem a própria rota em `src/routes/<id>/+page.svelte`, pré-renderizada com o conteúdo da ferramenta no HTML.
 - Seletores estáveis: ids de campo por ferramenta (`#b64-input`, `#b64-output`, `#json-input`, `#json-output`, `#bcrypt-password`, `#argon2-encoded`, `#jsontypes-language`, `#cron-expr`, `#palette-search`…), papéis e nomes acessíveis (`getByRole('radio', { name: 'Decode' })`, `getByRole('button', { name: 'Language' })`).
 - O Chromium headless usa `en-US`, então a interface começa em inglês; o botão de idioma alterna para `pt-BR`.
-- **Aguarde a hidratação** antes de usar atalhos de teclado: `page.goto('/', { waitUntil: 'networkidle' })`. Sem isso `Ctrl/⌘ K` é ignorado.
+- **Aguarde a hidratação** antes de interagir. As páginas vêm prontas no HTML e a hidratação sobrescreve o que for digitado antes dela. Use `open(page, path)` de `e2e/support.ts`, que espera `html[data-hydrated="true"]` (definido no `onMount` do layout). Até lá o CSS bloqueia o ponteiro nos campos.
 - Service worker: o `playwright.config.ts` o bloqueia por padrão; os testes de PWA usam `test.use({ serviceWorkers: 'allow' })`.
 - Specs (`pnpm test:e2e` roda tudo, em chromium, firefox, webkit e, para o layout, Pixel 7 e iPhone 14):
   - `privacy.spec.ts`: todas as rotas, zero requisição externa, CSP.
@@ -72,7 +72,8 @@ Se o build estiver velho ou ausente, rode `pnpm build` e repita. Se a porta esti
   - `flows.spec.ts`: um fluxo funcional por ferramenta (bcrypt/argon2 gerar, verificar e cancelar; JWT assinar/verificar; as 11 linguagens do JSON; QR gerar e ler o PNG de volta; imagem; conversores e geradores).
   - `tools.spec.ts`: smoke de worker, WebAssembly e carregamento lazy.
   - `layout.spec.ts`: sem rolagem horizontal em claro e escuro, desktop e celular; paleta usável.
-  - `a11y.spec.ts`: axe (WCAG 2 A/AA) em todas as rotas, claro e escuro, só no Chromium; falha em impacto serious/critical.
+  - `a11y.spec.ts`: axe (WCAG 2 A/AA) em todas as rotas, claro e escuro, no Chromium desktop e no Pixel 7; falha em impacto serious/critical.
+  - Desempenho: `scripts/perf/measure-wasm.mjs` (custo de bcrypt/argon2) e Lighthouse (`npx lighthouse@latest <url> --preset=desktop`, ou sem preset para celular) contra `wrangler pages dev`. Números de referência no README.
 
 Mapa de funcionalidades: `features/README.md`.
 
@@ -97,7 +98,7 @@ Prova suficiente = o teste passou **e** os artefatos existem **e** a lista de re
 
 - **`SEM BUILD`/build velho:** falta setup, não defeito. Rode `pnpm build`.
 - **Porta ocupada / `strictPort` falhou:** processo de terceiros. Identifique com `lsof`; não mate nem reaproveite.
-- **Heading ou campo "not found" logo após `goto`:** quase sempre hidratação. Use `waitUntil: 'networkidle'`.
+- **Valor digitado que some, ou atalho de teclado ignorado:** quase sempre hidratação. Use `open(page, path)` em vez de `page.goto`.
 - **Offline mostra "Tool not found" ou módulo dinâmico falha:** defeito real do service worker (já ocorreu: caminhos do manifesto sem `/` inicial, `Vary: Origin` no `cache.match`, `_headers` no precache). Leia `src/service-worker.ts`; não enfraqueça o teste.
 - **Requisição externa registrada:** defeito de privacidade. Veja a URL em `base64-network-log.json` ou no relatório; não adicione o host a nenhuma lista de permitidos.
 - **Chromium ausente:** `pnpm exec playwright install chromium`.

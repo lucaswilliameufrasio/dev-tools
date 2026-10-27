@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import { i18n, t, type MessageKey } from '#lib/i18n/index.svelte.js';
 	import { theme } from '#lib/theme.svelte.js';
+	import { toolHref } from '#lib/tools/href.js';
 	import { GROUP_ORDER, TOOLS } from '#lib/tools/registry.js';
 	import Logo from '#lib/ui/Logo.svelte';
 	import Palette from '#lib/ui/Palette.svelte';
@@ -14,6 +15,8 @@
 	let palette = $state<Palette>();
 
 	onMount(() => {
+		// Everything below has hydrated by now; tests and the CSS guard in app.css read this.
+		document.documentElement.dataset.hydrated = 'true';
 		i18n.init();
 		theme.init();
 	});
@@ -27,7 +30,11 @@
 		<span class="brand-name">{t('app.name')}</span>
 	</a>
 
-	<a class="privacy-chip" href={`${resolve('/')}#privacidade`}>
+	<a
+		class="privacy-chip"
+		href={`${resolve('/')}#privacidade`}
+		aria-label={t('privacy.badge')}
+	>
 		<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
 			<path
 				d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3Zm-1.2 14.2-3.5-3.5 1.4-1.4 2.1 2.1 4.6-4.6 1.4 1.4-6 6Z"
@@ -54,7 +61,7 @@
 		<button
 			type="button"
 			class="icon-btn"
-			aria-label={t('nav.language')}
+			aria-label={`${t('nav.language')}: ${i18n.locale === 'pt' ? 'PT' : 'EN'}`}
 			onclick={() => i18n.set(i18n.locale === 'pt' ? 'en' : 'pt')}
 		>
 			{i18n.locale === 'pt' ? 'PT' : 'EN'}
@@ -95,8 +102,8 @@
 					{#each TOOLS.filter((tool) => tool.group === group) as tool (tool.id)}
 						<li>
 							<a
-								href={resolve('/[id]', { id: tool.id })}
-								aria-current={page.params.id === tool.id ? 'page' : undefined}
+								href={toolHref(tool.id)}
+								aria-current={page.route.id === `/${tool.id}` ? 'page' : undefined}
 							>
 								<span class="glyph small-glyph">{tool.glyph}</span>
 								<span>{t(`tool.${tool.id}.name` as MessageKey)}</span>

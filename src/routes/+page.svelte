@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import { t, type MessageKey } from '#lib/i18n/index.svelte.js';
+	import { toolHref } from '#lib/tools/href.js';
 	import { GROUP_ORDER, TOOLS } from '#lib/tools/registry.js';
 </script>
 
@@ -20,7 +20,7 @@
 			<ul class="cards">
 				{#each TOOLS.filter((tool) => tool.group === group) as tool (tool.id)}
 					<li>
-						<a class="card" href={resolve('/[id]', { id: tool.id })}>
+						<a class="card" href={toolHref(tool.id)}>
 							<span class="glyph">{tool.glyph}</span>
 							<span class="card-text">
 								<strong>{t(`tool.${tool.id}.name` as MessageKey)}</strong>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
 	import { t, type MessageKey } from '#lib/i18n/index.svelte.js';
+	import { toolHref } from '#lib/tools/href.js';
 	import { TOOLS, type ToolDefinition } from '#lib/tools/registry.js';
 	import { tick } from 'svelte';
 
@@ -48,7 +48,7 @@
 
 	async function choose(tool: ToolDefinition): Promise<void> {
 		close();
-		await goto(resolve('/[id]', { id: tool.id }));
+		await goto(toolHref(tool.id));
 	}
 
 	function onInput(event: Event & { currentTarget: HTMLInputElement }): void {

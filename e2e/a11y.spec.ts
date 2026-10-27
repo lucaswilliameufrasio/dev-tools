@@ -1,14 +1,15 @@
 import AxeBuilder from '@axe-core/playwright';
+import { open } from './support';
 import { expect, test } from '@playwright/test';
 import { TOOLS } from '../src/lib/tools/registry';
 
 const PAGES = ['/', ...TOOLS.map((tool) => `/${tool.id}`)];
 
-test.skip(({ browserName }) => browserName !== 'chromium', 'axe runs once, on Chromium');
+test.skip(({ browserName }) => browserName !== 'chromium', 'axe runs on Chromium (desktop and phone)');
 
 for (const path of PAGES) {
 	test(`no serious accessibility violations: ${path}`, async ({ page }) => {
-		await page.goto(path, { waitUntil: 'networkidle' });
+		await open(page, path, { waitUntil: 'networkidle' });
 		await expect(page.locator('h1')).toBeVisible();
 
 		for (const scheme of ['light', 'dark'] as const) {

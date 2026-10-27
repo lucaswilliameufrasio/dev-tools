@@ -30,7 +30,7 @@ export default defineConfig({
 		{ name: 'firefox', use: { ...devices['Desktop Firefox'] } },
 		{ name: 'webkit', use: { ...devices['Desktop Safari'] } },
 		// Phone-sized viewports run the layout checks (see e2e/layout.spec.ts).
-		{ name: 'mobile-chrome', use: { ...devices['Pixel 7'] }, testMatch: /layout\.spec\.ts/ },
+		{ name: 'mobile-chrome', use: { ...devices['Pixel 7'] }, testMatch: /(layout|a11y)\.spec\.ts/ },
 		{ name: 'mobile-safari', use: { ...devices['iPhone 14'] }, testMatch: /layout\.spec\.ts/ }
 	]
 });

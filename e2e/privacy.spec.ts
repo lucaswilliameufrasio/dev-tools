@@ -1,3 +1,4 @@
+import { open } from './support';
 import { expect, test } from '@playwright/test';
 import { TOOLS } from '../src/lib/tools/registry';
 
@@ -26,7 +27,7 @@ for (const path of PAGES) {
 			errors.push(error.message);
 		});
 
-		await page.goto(path, { waitUntil: 'networkidle' });
+		await open(page, path, { waitUntil: 'networkidle' });
 		await expect(page.locator('h1')).toBeVisible();
 		await page.waitForTimeout(400);
 
@@ -36,7 +37,7 @@ for (const path of PAGES) {
 }
 
 test('declares a strict content security policy', async ({ page }) => {
-	await page.goto('/');
+	await open(page, '/');
 	const policy = await page
 		.locator('meta[http-equiv="content-security-policy"]')
 		.getAttribute('content');

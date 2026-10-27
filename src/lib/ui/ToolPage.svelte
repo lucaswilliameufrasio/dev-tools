@@ -1,18 +1,20 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { t, type MessageKey } from '#lib/i18n/index.svelte.js';
-	import { findTool } from '#lib/tools/registry.js';
-	import type { PageProps } from './$types';
+	import { findTool, type ToolId } from '#lib/tools/registry.js';
+	import type { Snippet } from 'svelte';
 
-	let { data }: PageProps = $props();
+	type Props = { id: ToolId; children: Snippet };
 
-	const tool = $derived(findTool(data.id));
-	const name = $derived(t(`tool.${data.id}.name` as MessageKey));
+	let { id, children }: Props = $props();
+
+	const tool = $derived(findTool(id));
+	const name = $derived(t(`tool.${id}.name` as MessageKey));
 </script>
 
 <svelte:head>
 	<title>{name} · dev-tools</title>
-	<meta name="description" content={t(`tool.${data.id}.desc` as MessageKey)} />
+	<meta name="description" content={t(`tool.${id}.desc` as MessageKey)} />
 </svelte:head>
 
 {#if tool}
@@ -24,19 +26,10 @@
 				<span>{t(`group.${tool.group}` as MessageKey)}</span>
 			</nav>
 			<h1>{name}</h1>
-			<p class="muted">{t(`tool.${data.id}.desc` as MessageKey)}</p>
+			<p class="muted">{t(`tool.${id}.desc` as MessageKey)}</p>
 		</header>
 
-		{#key data.id}
-			{#await tool.load()}
-				<p class="muted" role="status">{t('loading')}</p>
-			{:then module}
-				{@const ToolBody = module.default}
-				<ToolBody />
-			{:catch}
-				<p class="notice error" role="alert">{t('loadFailed')}</p>
-			{/await}
-		{/key}
+		{@render children()}
 	</article>
 {/if}
 

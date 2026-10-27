@@ -1,5 +1,4 @@
 <script lang="ts">
-	import jsQR from 'jsqr';
 	import QRCode from 'qrcode';
 	import { downloadBytes } from '#lib/download.js';
 	import { t } from '#lib/i18n/index.svelte.js';
@@ -177,6 +176,8 @@
 			context.drawImage(bitmap, 0, 0, width, height);
 			bitmap.close();
 			const data = context.getImageData(0, 0, width, height);
+			// Only needed when reading a code, so it is loaded on demand.
+			const { default: jsQR } = await import('jsqr');
 			const found = jsQR(data.data, width, height, { inversionAttempts: 'attemptBoth' });
 			if (found) {
 				readState = { kind: 'ok', text: found.data, preview };

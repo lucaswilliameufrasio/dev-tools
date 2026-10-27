@@ -144,7 +144,9 @@
 	{/if}
 
 	<div class="panel">
-		<div class="table-wrap">
+		<!-- A scrollable region must be reachable by keyboard. -->
+		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+		<div class="table-wrap" tabindex="0">
 			<table class="grid">
 				<caption class="sr-only">{t('chmod.grid')}</caption>
 				<thead>

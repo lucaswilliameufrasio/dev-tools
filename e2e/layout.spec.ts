@@ -1,4 +1,5 @@
 import { mkdirSync } from 'node:fs';
+import { open } from './support';
 import { expect, test } from '@playwright/test';
 import { TOOLS } from '../src/lib/tools/registry';
 
@@ -11,7 +12,7 @@ test.beforeAll(() => {
 
 for (const path of PAGES) {
 	test(`no horizontal scroll in light and dark: ${path}`, async ({ page }, testInfo) => {
-		await page.goto(path, { waitUntil: 'networkidle' });
+		await open(page, path, { waitUntil: 'networkidle' });
 		await expect(page.locator('h1')).toBeVisible();
 
 		for (const scheme of ['light', 'dark'] as const) {
@@ -30,7 +31,7 @@ for (const path of PAGES) {
 }
 
 test('the command palette is usable on this viewport', async ({ page }) => {
-	await page.goto('/', { waitUntil: 'networkidle' });
+	await open(page, '/', { waitUntil: 'networkidle' });
 	await page.getByRole('button', { name: 'Search tools' }).click();
 	await page.locator('#palette-search').fill('cron');
 	await page.keyboard.press('Enter');

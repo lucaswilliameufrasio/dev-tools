@@ -225,7 +225,9 @@
 					{t('cidr.splitCapped', { limit: SUBNET_LIST_LIMIT, count: fmt(split.count) })}
 				</Notice>
 			{/if}
-			<div class="panel table-wrap">
+			<!-- A scrollable region must be reachable by keyboard. -->
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+			<div class="panel table-wrap" tabindex="0">
 				<table>
 					<thead>
 						<tr>

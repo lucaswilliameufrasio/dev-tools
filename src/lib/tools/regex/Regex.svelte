@@ -107,7 +107,9 @@
 				<Notice tone="info">{t('regex.truncated')}</Notice>
 			{/if}
 			{#if outcome.matches.length > 0}
-				<div class="table-wrap">
+				<!-- A scrollable region must be reachable by keyboard. -->
+				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+				<div class="table-wrap" tabindex="0">
 					<table>
 						<thead>
 							<tr>
