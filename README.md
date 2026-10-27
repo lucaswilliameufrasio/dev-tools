@@ -62,7 +62,7 @@ O repositório traz skills de design, UX e Svelte em `.agents/skills/`, com link
 No painel (Workers & Pages > Create > Pages > Connect to Git), escolha este repositório e use:
 
 - Build command: `pnpm build`
-- Build output directory: `build`
+- Build output directory: `build` (também definido em `wrangler.jsonc`, que prevalece sobre o preset "SvelteKit" do painel; esse preset procura `.svelte-kit/cloudflare`, que só existe com `adapter-cloudflare`)
 - Variável de ambiente `NODE_VERSION`: `24.22.1` (o Pages também lê `.node-version`)
 
 O arquivo `static/_headers` define os cabeçalhos de segurança e o cache dos assets.

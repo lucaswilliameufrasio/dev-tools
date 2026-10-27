@@ -1,0 +1,7 @@
+{
+	// Cloudflare Pages reads the output directory from here, so the
+	// dashboard's SvelteKit preset (.svelte-kit/cloudflare) is not used.
+	"name": "dev-tools",
+	"pages_build_output_dir": "./build",
+	"compatibility_date": "2026-10-27"
+}
