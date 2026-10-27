@@ -55,7 +55,7 @@ Stack: SvelteKit com `adapter-static` (todas as rotas pré-renderizadas), Svelte
 
 ## Skills de IA
 
-O repositório traz skills de design, UX e Svelte em `.agents/skills/`, com links simbólicos em `.claude/skills/` para o Claude Code. Instale outras com `npx skills add`. Veja `CLAUDE.md`.
+O repositório traz skills de design, UX e Svelte em `.agents/skills/`, com links simbólicos em `.claude/skills/` para o Claude Code. Instale outras com `npx skills add`. Veja `AGENTS.md`.
 
 ## Deploy no Cloudflare Pages
 
