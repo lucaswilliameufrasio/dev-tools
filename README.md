@@ -62,26 +62,32 @@ Stack: SvelteKit com `adapter-static` (todas as rotas pré-renderizadas), Svelte
 
 ## Desempenho
 
-Medido com Lighthouse 13.5 contra `wrangler pages dev` (cabeçalhos reais do Cloudflare), em 6 rotas:
+Site: https://dev-tools.lucaswilliameufrasio.com
+
+Lighthouse 13.5 contra o site em produção (Cloudflare Pages), 6 rotas:
 
 | | Desktop | Celular (4G lento simulado) |
 | --- | --- | --- |
-| Performance | 99–100 | 91–99 |
-| Acessibilidade, Boas práticas, SEO | 100 | 100 |
+| Performance | 100 | 95–100 |
+| Acessibilidade e SEO | 100 | 100 |
+| Boas práticas | 92 (ver abaixo) | 92 |
 | CLS | 0 | 0 |
-| LCP | 0,4–0,8 s | 1,9–2,8 s |
+| LCP | 0,4–0,5 s | 1,3–1,5 s |
 
-Cada página transfere cerca de 160–280 KiB, a maior parte fontes e o JavaScript da própria ferramenta.
+Cada página transfere cerca de 160–280 KiB, a maior parte fontes e o JavaScript da própria ferramenta. O ponto mais pesado é o SQL no celular (TBT de ~250 ms, por causa do `sql-formatter`).
 
-**Custo do WebAssembly** (`node scripts/perf/measure-wasm.mjs`, máquina Apple Silicon, mediana de 3 execuções):
+**Boas práticas 92:** o Cloudflare injeta em toda página HTML um script inline da detecção de JavaScript do Bot Fight Mode (`__CF$cv$params`, que carrega `/cdn-cgi/challenge-platform/...`). O CSP do app o bloqueia, o que gera um erro de console e tira os pontos. Não vem do código do repositório: desative a detecção de JavaScript em Security > Bots do domínio para voltar a 100.
+
+**Custo do WebAssembly** (`node scripts/perf/measure-wasm.mjs`, Apple Silicon, mediana de 3 execuções):
 
 - O WebAssembly vem embutido nos workers: `argon2` 12 KiB e `bcrypt` 11 KiB em gzip. Só são buscados quando a ferramenta é usada.
 - Partida a frio (worker + compilação do wasm): ~6–10 ms.
-- argon2id com os mínimos da OWASP (19 MiB, t=2, p=1): ~30 ms nos três navegadores, contra 16 ms do argon2 nativo do Node. Com 64 MiB, t=3, p=4: ~120 ms contra 29 ms nativo, porque o wasm roda em uma única thread.
-- bcrypt: custo 10 em ~65 ms, custo 12 em ~240 ms.
-- A thread principal não trava: o maior intervalo entre quadros durante o cálculo foi de ~17–18 ms (um quadro a 60 Hz).
+- argon2id nos mínimos da OWASP (19 MiB, t=2, p=1): 30–60 ms, contra 16 ms do argon2 nativo do Node. Com 64 MiB, t=3, p=4: 120–260 ms contra 29 ms nativo, porque o wasm usa uma thread só.
+- bcrypt: custo 10 em 65–110 ms, custo 12 em 240–490 ms.
+- Os tempos dobram com a máquina sob carga (a faixa inclui uma medição limpa e outra com a máquina ocupada) e não dependem de onde a página é servida: produção e local dão o mesmo.
+- A thread principal não trava: o maior intervalo entre quadros durante o cálculo foi de 17–18 ms (um quadro a 60 Hz), em qualquer carga.
 
-Em celulares esses tempos são maiores (da ordem de 3 a 6 vezes); não foram medidos em aparelho real.
+Em celulares esses tempos são maiores; não foram medidos em aparelho real.
 
 ## Skills de IA
 

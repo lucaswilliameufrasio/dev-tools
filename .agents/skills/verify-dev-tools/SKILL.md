@@ -32,7 +32,7 @@ PID=$(lsof -ti tcp:8788 -sTCP:LISTEN); lsof -p "$PID" | grep cwd   # confirme qu
 kill "$PID"                                                       # e encerre também o `npm exec` que você iniciou
 ```
 
-O mesmo `E2E_BASE_URL` serve para testar uma URL de preview do Cloudflare depois de um deploy.
+O mesmo `E2E_BASE_URL` serve para testar o site real (`https://dev-tools.lucaswilliameufrasio.com`) ou um preview do Cloudflare. Contra o site real use `--workers=2`: com 5 projetos em paralelo houve timeouts de 40 s a 1,7 min (passam isoladamente em 1,5–4 s).
 
 Para dirigir à mão (navegador MCP, curl), suba outro servidor em porta própria:
 
@@ -91,7 +91,7 @@ Prova suficiente = o teste passou **e** os artefatos existem **e** a lista de re
 ## Isolamento e limpeza
 
 - O verificador cria apenas: `build/` (regenerável), `verification-artifacts/`, `test-results/`, `playwright-report/` e, na condução manual, o servidor da porta 4398 e `/tmp/dev-tools-preview.log`. Remova somente isso.
-- Cada teste usa um contexto novo do Playwright (sem `localStorage`/cache compartilhado). Não rode dois `pnpm test:e2e` ao mesmo tempo: a porta 4399 é fixa.
+- Contra o site real os testes só leem páginas estáticas; não há escrita nem efeito externo. Cada teste usa um contexto novo do Playwright (sem `localStorage`/cache compartilhado). Não rode dois `pnpm test:e2e` ao mesmo tempo: a porta 4399 é fixa.
 - Não há efeitos externos: nenhum serviço remoto, e-mail, pagamento ou deploy.
 
 ## Failure handling
@@ -100,6 +100,7 @@ Prova suficiente = o teste passou **e** os artefatos existem **e** a lista de re
 - **Porta ocupada / `strictPort` falhou:** processo de terceiros. Identifique com `lsof`; não mate nem reaproveite.
 - **Valor digitado que some, ou atalho de teclado ignorado:** quase sempre hidratação. Use `open(page, path)` em vez de `page.goto`.
 - **Offline mostra "Tool not found" ou módulo dinâmico falha:** defeito real do service worker (já ocorreu: caminhos do manifesto sem `/` inicial, `Vary: Origin` no `cache.match`, `_headers` no precache). Leia `src/service-worker.ts`; não enfraqueça o teste.
+- **Erro de console de CSP só em produção ("Executing inline script violates…"):** é o script de detecção de JavaScript que o Cloudflare injeta (Bot Fight Mode), não do app; o CSP está certo em bloqueá-lo. Confirme comparando o HTML servido com `build/*.html` (um segundo `<script>` com `__CF$cv$params`).
 - **Requisição externa registrada:** defeito de privacidade. Veja a URL em `base64-network-log.json` ou no relatório; não adicione o host a nenhuma lista de permitidos.
 - **Chromium ausente:** `pnpm exec playwright install chromium`.
 - Registre o erro real; não reduza a jornada para passar.
