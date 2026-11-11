@@ -126,6 +126,71 @@ test('qr: a generated PNG is read back to the same text', async ({ page }) => {
 	await expect(page.locator('#qr-decoded')).toHaveValue(text);
 });
 
+function storedZip(name: string, data: Buffer): Buffer {
+	const fileName = Buffer.from(name);
+	const local = Buffer.alloc(30 + fileName.length);
+	local.writeUInt32LE(0x04034b50, 0);
+	local.writeUInt16LE(0x800, 6);
+	local.writeUInt32LE(data.length, 18);
+	local.writeUInt32LE(data.length, 22);
+	local.writeUInt16LE(fileName.length, 26);
+	fileName.copy(local, 30);
+	const central = Buffer.alloc(46 + fileName.length);
+	central.writeUInt32LE(0x02014b50, 0);
+	central.writeUInt16LE(0x800, 8);
+	central.writeUInt32LE(data.length, 20);
+	central.writeUInt32LE(data.length, 24);
+	central.writeUInt16LE(fileName.length, 28);
+	fileName.copy(central, 46);
+	const eocd = Buffer.alloc(22);
+	eocd.writeUInt32LE(0x06054b50, 0);
+	eocd.writeUInt16LE(1, 8);
+	eocd.writeUInt16LE(1, 10);
+	eocd.writeUInt32LE(central.length, 12);
+	eocd.writeUInt32LE(local.length + data.length, 16);
+	return Buffer.concat([local, data, central, eocd]);
+}
+
+test('image: walks several files and a zip one at a time', async ({ page }) => {
+	const png = Buffer.from(
+		'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+		'base64'
+	);
+	await open(page, '/image');
+	await expect(page.getByText('Drop several images, a folder or a ZIP file.')).toBeVisible();
+	await expect(page.getByText(/one image at a time/)).toBeVisible();
+	await expect(page.getByText(/vary from browser to browser/)).toBeVisible();
+	await expect(page.locator('input[type="file"]')).toHaveAttribute('multiple', '');
+
+	await page.locator('input[type="file"]').setInputFiles({
+		name: 'broken.zip',
+		mimeType: 'application/zip',
+		buffer: Buffer.from('PK\x03\x04')
+	});
+	await expect(page.getByRole('alert')).toContainText('Could not read the ZIP file.');
+
+	await page.locator('input[type="file"]').setInputFiles([
+		{ name: 'a.png', mimeType: 'image/png', buffer: png },
+		{ name: 'b.png', mimeType: 'image/png', buffer: png }
+	]);
+	await expect(page.locator('#image-queue')).toContainText('1 of 2');
+	await expect(page.locator('#image-queue')).toContainText('a.png');
+	await expect(page.locator('textarea').first()).toHaveValue(/^data:image\/png;base64,/);
+	await page.locator('#image-next').click();
+	await expect(page.locator('#image-queue')).toContainText('2 of 2');
+	await expect(page.locator('#image-queue')).toContainText('b.png');
+	await expect(page.locator('#image-next')).toBeDisabled();
+
+	await page.locator('input[type="file"]').setInputFiles({
+		name: 'pack.zip',
+		mimeType: 'application/zip',
+		buffer: storedZip('inside.png', png)
+	});
+	await expect(page.getByText('inside.png').first()).toBeVisible();
+	await expect(page.locator('#image-queue')).toHaveCount(0);
+	await expect(page.locator('textarea').first()).toHaveValue(/^data:image\/png;base64,/);
+});
+
 test('image: reads a PNG, shows the data URI and converts it', async ({ page }) => {
 	// 1x1 transparent PNG
 	const png = Buffer.from(
@@ -136,6 +201,7 @@ test('image: reads a PNG, shows the data URI and converts it', async ({ page }) 
 	await page.locator('input[type="file"]').setInputFiles({ name: 'dot.png', mimeType: 'image/png', buffer: png });
 	await expect(page.getByText('dot.png').first()).toBeVisible();
 	await expect(page.locator('textarea').first()).toHaveValue(/^data:image\/png;base64,/);
+	await expect(page.getByText(/vary from browser to browser/)).toBeVisible();
 	await page.locator('#image-format').selectOption('image/jpeg');
 	await expect(page.getByText(/JPEG|jpeg/).first()).toBeVisible();
 });
